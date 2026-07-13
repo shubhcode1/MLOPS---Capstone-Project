@@ -225,6 +225,6 @@ local_s3
 
 .env
 data/
-uv_commands.txt
+history_commands.txt
 
 models/

@@ -1,0 +1,129 @@
+name: CI Pipeline
+
+on:
+  push:
+
+jobs:
+  project-testing:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout repository
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Setup Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      # Install uv
+      - name: Install uv
+        uses: astral-sh/setup-uv@v6
+
+      # Cache uv dependencies
+      - name: Cache uv dependencies
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/uv
+          key: ${{ runner.os }}-uv-${{ hashFiles('uv.lock') }}
+          restore-keys: |
+            ${{ runner.os }}-uv-
+
+      # Install project dependencies
+      - name: Install dependencies
+        run: |
+          uv sync
+
+      # Run DVC pipeline
+      - name: Run pipeline
+        # env:
+        #   CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
+        run: |
+          dvc repro
+
+      # # Run model tests
+      # - name: Run model tests
+      #   env:
+      #     CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
+      #   run: |
+      #     uv run python -m unittest tests/test_model.py
+
+      # # Promote model
+      # - name: Promote model to production
+      #   if: success()
+      #   env:
+      #     CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
+      #   run: |
+      #     uv run python scripts/promote_model.py
+
+      # # Run Flask app tests
+      # - name: Run Flask app tests
+      #   if: success()
+      #   env:
+      #     CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
+      #   run: |
+      #     uv run python -m unittest tests/test_flask_app.py
+
+      # # Configure AWS credentials
+      # - name: Configure AWS Credentials
+      #   if: success()
+      #   run: |
+      #     aws configure set aws_access_key_id ${{ secrets.AWS_ACCESS_KEY_ID }}
+      #     aws configure set aws_secret_access_key ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      #     aws configure set region ${{ secrets.AWS_REGION }}
+
+      # # Login to Amazon ECR
+      # - name: Login to Amazon ECR
+      #   if: success()
+      #   run: |
+      #     aws ecr get-login-password --region ${{ secrets.AWS_REGION }} | \
+      #     docker login --username AWS --password-stdin \
+      #     ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com
+
+      # # Build Docker image
+      # - name: Build Docker image
+      #   run: |
+      #     docker build -t ${{ secrets.ECR_REPOSITORY }}:latest .
+
+      # # Tag Docker image
+      # - name: Tag Docker image
+      #   run: |
+      #     docker tag ${{ secrets.ECR_REPOSITORY }}:latest \
+      #     ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+
+      # # Verify Docker login
+      # - name: Check Docker Authentication
+      #   run: docker info
+
+      # # Push Docker image to ECR
+      # - name: Push Docker image to ECR
+      #   run: |
+      #     docker push \
+      #     ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
+
+      # # Install kubectl
+      # - name: Set up kubectl
+      #   uses: azure/setup-kubectl@v4
+      #   with:
+      #     version: latest
+
+      # # Configure kubectl for EKS
+      # - name: Update kubeconfig
+      #   run: |
+      #     aws eks update-kubeconfig \
+      #       --region ${{ secrets.AWS_REGION }} \
+      #       --name flask-app-cluster
+
+      # # Create Kubernetes Secret
+      # - name: Create Kubernetes Secret
+      #   run: |
+      #     kubectl create secret generic capstone-secret \
+      #       --from-literal=CAPSTONE_TEST=${{ secrets.CAPSTONE_TEST }} \
+      #       --dry-run=client -o yaml | kubectl apply -f -
+
+      # # Deploy application
+      # - name: Deploy to EKS
+      #   run: |
+      #     kubectl apply -f deployment.yaml
