@@ -36,6 +36,9 @@ jobs:
         run: |
           uv sync
 
+      - name: Run tests
+        run: uv run pytest
+
       # Run DVC pipeline
       - name: Run pipeline
         # env:
