@@ -224,7 +224,6 @@ credentials.txt
 local_s3
 
 .env
-data/
+
 history_commands.txt
 
-models/
