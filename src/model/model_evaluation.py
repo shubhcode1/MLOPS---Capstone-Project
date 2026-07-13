@@ -23,7 +23,7 @@ os.environ["MLFLOW_TRACKING_PASSWORD"] = dagshub_token
 
 dagshub_url = "https://dagshub.com"
 repo_owner = "kaleshubham8459"
-repo_name = "YT-Capstone-Project"
+repo_name = "MLOPS---Capstone-Project"
 
 # Set up MLflow tracking URI
 mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
@@ -32,7 +32,7 @@ mlflow.set_tracking_uri(f'{dagshub_url}/{repo_owner}/{repo_name}.mlflow')
 # Below code block is for local use
 # -------------------------------------------------------------------------------------
 # mlflow.set_tracking_uri('https://dagshub.com/kaleshubham8459/MLOPS---Capstone-Project.mlflow')
-# dagshub.init(repo_owner='kaleshubham8459', repo_name='YT-Capstone-Project', mlflow=True)
+# dagshub.init(repo_owner='kaleshubham8459', repo_name='MLOPS---Capstone-Project', mlflow=True)
 # --------------------------------------------------------------------------------
 
 
