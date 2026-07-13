@@ -41,6 +41,7 @@ jobs:
         # env:
         #   CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
         run: |
+          source .venv/bin/activate
           dvc repro
 
       # # Run model tests
