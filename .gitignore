@@ -227,3 +227,5 @@ local_s3
 
 history_commands.txt
 
+data/
+models/
