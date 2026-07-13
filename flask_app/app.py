@@ -76,7 +76,7 @@ def normalize_text(text):
 
 # Below code block is for production use
 # -------------------------------------------------------------------------------------
-# Set up DagsHub credentials for MLflow tracking
+# # Set up DagsHub credentials for MLflow tracking
 dagshub_token = os.getenv("CAPSTONE_TEST")
 if not dagshub_token:
     raise EnvironmentError("CAPSTONE_TEST environment variable is not set")
@@ -113,25 +113,27 @@ PREDICTION_COUNT = Counter(
 
 # ------------------------------------------------------------------------------------------
 # Model and vectorizer setup
-# model_name = "my_model"
-# def get_latest_model_version(model_name):
-#     client = mlflow.MlflowClient()
-#     latest_version = client.get_latest_versions(model_name, stages=["Production"])
-#     if not latest_version:
-#         latest_version = client.get_latest_versions(model_name, stages=["None"])
-#     return latest_version[0].version if latest_version else None
-
 model_name = "my_model"
 def get_latest_model_version(model_name):
     client = mlflow.MlflowClient()
+    latest_version = client.get_latest_versions(model_name, stages=["Production"])
+    print(f'Latest version in Production: {latest_version}')
+    if not latest_version:
+        latest_version = client.get_latest_versions(model_name, stages=["None"])
 
-    versions = client.search_model_versions(f"name='{model_name}'")
+    return latest_version[0].version if latest_version else None
 
-    if not versions:
-        raise Exception(f"No versions found for {model_name}")
+# model_name = "my_model"
+# def get_latest_model_version(model_name):
+#     client = mlflow.MlflowClient()
 
-    latest = max(versions, key=lambda v: int(v.version))
-    return latest.version
+#     versions = client.search_model_versions(f"name='{model_name}'")
+
+#     if not versions:
+#         raise Exception(f"No versions found for {model_name}")
+
+#     latest = max(versions, key=lambda v: int(v.version))
+#     return latest.version
 
 
 model_version = get_latest_model_version(model_name)

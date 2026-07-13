@@ -44,28 +44,28 @@ jobs:
           source .venv/bin/activate
           dvc repro
 
-      # # Run model tests
-      # - name: Run model tests
-      #   env:
-      #     CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
-      #   run: |
-      #     uv run python -m unittest tests/test_model.py
+      # Run model tests
+      - name: Run model tests
+        env:
+          CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
+        run: |
+          uv run python -m unittest tests/test_model.py
 
-      # # Promote model
-      # - name: Promote model to production
-      #   if: success()
-      #   env:
-      #     CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
-      #   run: |
-      #     uv run python scripts/promote_model.py
+      # Promote model
+      - name: Promote model to production
+        if: success()
+        env:
+          CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
+        run: |
+          uv run python scripts/promote_model.py
 
-      # # Run Flask app tests
-      # - name: Run Flask app tests
-      #   if: success()
-      #   env:
-      #     CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
-      #   run: |
-      #     uv run python -m unittest tests/test_flask_app.py
+      # Run Flask app tests
+      - name: Run Flask app tests
+        if: success()
+        env:
+          CAPSTONE_TEST: ${{ secrets.CAPSTONE_TEST }}
+        run: |
+          uv run python -m unittest tests/test_flask_app.py
 
       # # Configure AWS credentials
       # - name: Configure AWS Credentials
