@@ -104,27 +104,27 @@ jobs:
           docker push \
           ${{ secrets.AWS_ACCOUNT_ID }}.dkr.ecr.${{ secrets.AWS_REGION }}.amazonaws.com/${{ secrets.ECR_REPOSITORY }}:latest
 
-      # # Install kubectl
-      # - name: Set up kubectl
-      #   uses: azure/setup-kubectl@v4
-      #   with:
-      #     version: latest
+      # Install kubectl
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: latest
 
-      # # Configure kubectl for EKS
-      # - name: Update kubeconfig
-      #   run: |
-      #     aws eks update-kubeconfig \
-      #       --region ${{ secrets.AWS_REGION }} \
-      #       --name flask-app-cluster
+      # Configure kubectl for EKS
+      - name: Update kubeconfig
+        run: |
+          aws eks update-kubeconfig \
+            --region ${{ secrets.AWS_REGION }} \
+            --name flask-app-cluster
 
-      # # Create Kubernetes Secret
-      # - name: Create Kubernetes Secret
-      #   run: |
-      #     kubectl create secret generic capstone-secret \
-      #       --from-literal=CAPSTONE_TEST=${{ secrets.CAPSTONE_TEST }} \
-      #       --dry-run=client -o yaml | kubectl apply -f -
+      # Create Kubernetes Secret
+      - name: Create Kubernetes Secret
+        run: |
+          kubectl create secret generic capstone-secret \
+            --from-literal=CAPSTONE_TEST=${{ secrets.CAPSTONE_TEST }} \
+            --dry-run=client -o yaml | kubectl apply -f -
 
-      # # Deploy application
-      # - name: Deploy to EKS
-      #   run: |
-      #     kubectl apply -f deployment.yaml
+      # Deploy application
+      - name: Deploy to EKS
+        run: |
+          kubectl apply -f deployment.yaml

@@ -21,7 +21,7 @@ RUN uv run python -m nltk.downloader stopwords wordnet
 EXPOSE 5000
 
 # For local
-CMD ["uv", "run", "python", "app.py"]
+# CMD ["uv", "run", "python", "app.py"]
 
 # For Production
-# CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "--timeout", "120", "app:app"]
+CMD ["uv", "run", "gunicorn", "--bind", "0.0.0.0:5000", "--timeout", "120", "app:app"]
